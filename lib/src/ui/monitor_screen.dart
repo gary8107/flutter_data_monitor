@@ -44,7 +44,8 @@ class _MonitorScreenState extends State<MonitorScreen> {
       }
       if (query.isEmpty) return true;
       return entry.title.toLowerCase().contains(query) ||
-          (entry.subtitle?.toLowerCase().contains(query) ?? false);
+          (entry.subtitle?.toLowerCase().contains(query) ?? false) ||
+          (entry.source?.toLowerCase().contains(query) ?? false);
     }).toList();
   }
 
@@ -103,7 +104,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
           isDense: true,
           filled: true,
           prefixIcon: const Icon(Icons.search),
-          hintText: '輸入關鍵字搜尋（標題／副標題）',
+          hintText: '輸入關鍵字搜尋（標題／副標題／裝置品類）',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,
