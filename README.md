@@ -2,6 +2,8 @@
 
 可擴充的 App 資料監控器。仿 [`network_logger`](https://pub.dev/packages/network_logger) 的懸浮視窗體驗，但把「HTTP 專用模型」抽換成**通用條目**，因此可監控任何來源的資料。
 
+> 完整的操作與整合說明見 **[使用手冊 MANUAL.md](MANUAL.md)**（含畫面操作、四通道接法、擴充、FAQ）。本 README 為快速上手。
+
 ## 三層架構
 
 ```
@@ -12,7 +14,7 @@
 
 - **採集層**：把來源資料轉成 `MonitorEntry`，丟進 `MonitorLog`。內建 `DioMonitor`（HTTP）。
 - **儲存層**：`MonitorLog` 存條目 + broadcast stream；全域單例 `Monitor.instance`。
-- **展示層**：懸浮鈕 → 列表（搜尋 + 分類篩選）→ 詳情（多 tab / section）。**新增來源時完全不用改這層。**
+- **展示層**：懸浮鈕 → 列表（搜尋 + 分類篩選）→ 詳情（多 tab / section）。**新增來源時完全不用改這層。** 搜尋比對 標題／副標題／來源徽章（裝置名稱·品類）。
 
 ## 快速開始
 
@@ -56,10 +58,10 @@ final mqtt = MqttMonitor();
 // 1) 收：connect() 內 client.updates?.listen(...) 的迴圈中
 final payload = MqttPublishPayload.bytesToStringAsString(
     (message.payload as MqttPublishMessage).payload.message);
-mqtt.received(message.topic, payload);
+mqtt.received(message.topic, payload, source: deviceLabel); // source 選用：標裝置名稱·品類
 
 // 2) 送：publish() 內 client.publishMessage(...) 之後
-mqtt.published(topic, message, qos: qos, retain: retain);
+mqtt.published(topic, message, qos: qos, retain: retain, source: deviceLabel);
 
 // 3) 生命週期（選用）：onConnected / _onDisconnected / _setError
 mqtt.connected(state.broker, port: state.port);
@@ -139,8 +141,9 @@ Monitor.instance.log(
 
 | 欄位 | 用途 |
 |------|------|
-| `category` | 分類，列表頁 chip 篩選依據 |
-| `title` / `subtitle` | 列表兩行文字 |
+| `category` | 分類，列表頁 chip 篩選依據、決定徽章顏色 |
+| `title` / `subtitle` | 列表兩行文字（納入搜尋） |
+| `source` | 來源標籤（裝置名稱·品類），列表列與詳情各顯示徽章（納入搜尋） |
 | `status` | `pending` / `success` / `error`，決定 icon 顏色 |
 | `tabs` → `sections` | 詳情頁內容 |
 | `raw` | 保留原始物件（選用） |
