@@ -1,0 +1,22 @@
+name: data_monitor_example
+description: data_monitor 的示範 App。
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ">=5.0.0 <6.0.0"
+  data_monitor:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
