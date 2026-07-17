@@ -20,9 +20,29 @@
 // 1) HTTP：掛上 interceptor
 final dio = Dio()..interceptors.add(DioMonitor());
 
-// 2) 掛上懸浮按鈕（在 MaterialApp 之下的頁面）
-MonitorOverlay.attachTo(context);
+// 2) 掛上懸浮按鈕
 ```
+
+懸浮按鈕有兩種掛法：
+
+**（推薦）`MonitorGate`** —— 放在 `MaterialApp.builder`，生命週期跟著 widget 樹，`MaterialApp` 重建（切語言 / 主題）也不會變孤兒或重複。預設**三指連點三下**切換顯示 / 隱藏；開監控頁走與 App 同一把 `navigatorKey`，疊在所有頁面之上。
+
+```dart
+final navigatorKey = GlobalKey<NavigatorState>();
+
+MaterialApp( // 或 MaterialApp.router
+  navigatorKey: navigatorKey,
+  builder: (context, child) => MonitorGate(
+    navigatorKey: navigatorKey, // 要與 App 同一把
+    child: child!,
+  ),
+  home: HomePage(),
+);
+```
+
+可調參數：`initiallyVisible`（預設顯示）、`fingerCount`（預設 3）、`tapCount`（預設 3）、`tapWindow`（預設 2 秒）。
+
+**（簡易）`MonitorOverlay.attachTo(context)`** —— 直接插進 root overlay，一行搞定；但 `MaterialApp` 重建時的 OverlayEntry 會變孤兒，適合單純 App 或快速試用。
 
 ## 內建 channel：MQTT
 

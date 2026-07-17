@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(const DemoApp());
 
+// 與 MaterialApp 共用同一把 navigatorKey，MonitorGate 才能把監控頁疊在所有頁面上。
+final _navigatorKey = GlobalKey<NavigatorState>();
+
 class DemoApp extends StatelessWidget {
   const DemoApp({super.key});
 
@@ -11,8 +14,14 @@ class DemoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Data Monitor',
+      navigatorKey: _navigatorKey,
       // 路由採集：掛上 observer 即可自動記錄 push/pop。
       navigatorObservers: [MonitorNavigatorObserver()],
+      // 懸浮鈕：掛在 builder，三指連點三下切換顯示 / 隱藏。
+      builder: (context, child) => MonitorGate(
+        navigatorKey: _navigatorKey,
+        child: child!,
+      ),
       home: const HomePage(),
     );
   }
@@ -41,15 +50,6 @@ class _HomePageState extends State<HomePage> {
   static const _dpReport =
       '{"power":"on","temperature_sensor":29,"humidity_set":65,'
       '"co2_sensor":0,"filter_days":90,"fire_alarm":"off","bypass_on":"off"}';
-
-  @override
-  void initState() {
-    super.initState();
-    // 掛上懸浮按鈕（要在 MaterialApp 之下才有 Overlay）。
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      MonitorOverlay.attachTo(context);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
