@@ -8,3 +8,4 @@ library data_monitor;
 export 'src/monitor_entry.dart';
 export 'src/monitor_section.dart';
 export 'src/monitor_log.dart';
+export 'src/channels/dio_monitor.dart';
