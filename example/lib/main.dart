@@ -9,7 +9,12 @@ class DemoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Data Monitor', home: HomePage());
+    return MaterialApp(
+      title: 'Data Monitor',
+      // 路由採集：掛上 observer 即可自動記錄 push/pop。
+      navigatorObservers: [MonitorNavigatorObserver()],
+      home: const HomePage(),
+    );
   }
 }
 
@@ -26,6 +31,10 @@ class _HomePageState extends State<HomePage> {
 
   // MQTT 採集：不依賴 mqtt_client，呼叫端餵字串即可（模擬 engo 的收 / 送）。
   final mqtt = MqttMonitor();
+
+  // App 事件 / 狀態採集。
+  final appEvent = AppEventMonitor();
+  int counter = 0;
 
   // 模擬一筆 engo 裝置 DP 上報（節錄自實機 log）。
   static const _deviceId = '6be6b5a8631246fcaa2d5e8c3e787d77';
@@ -91,6 +100,31 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           const Divider(),
+          const _SectionTitle('App 事件 / 狀態 / 路由（P3）'),
+          ListTile(
+            title: const Text('記一筆 App 事件（帶 data）'),
+            onTap: () => appEvent.event(
+              '使用者登入',
+              detail: 'AuthService',
+              data: {'userId': 'u_1024', 'method': 'oauth', 'vip': true},
+            ),
+          ),
+          ListTile(
+            title: const Text('記一筆狀態變化（from → to）'),
+            onTap: () {
+              final from = counter;
+              counter += 1;
+              appEvent.stateChanged('counterProvider', from: from, to: counter);
+            },
+          ),
+          ListTile(
+            title: const Text('開啟第二頁（路由 push/pop 自動記錄）'),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              settings: const RouteSettings(name: '/second'),
+              builder: (_) => const SecondPage(),
+            )),
+          ),
+          const Divider(),
           const _SectionTitle('自訂來源（一行 log）'),
           ListTile(
             title: const Text('記一筆純文字事件'),
@@ -116,6 +150,24 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 第二頁：純粹用來示範路由 push/pop 會被 MonitorNavigatorObserver 記錄。
+class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('第二頁')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('返回（會記一筆 ROUTE pop）'),
+        ),
       ),
     );
   }

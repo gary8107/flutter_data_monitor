@@ -10,6 +10,7 @@ export 'src/monitor_section.dart';
 export 'src/monitor_log.dart';
 export 'src/channels/dio_monitor.dart';
 export 'src/channels/mqtt_monitor.dart';
+export 'src/channels/app_event_monitor.dart';
 export 'src/ui/monitor_button.dart' show MonitorButton, MonitorOverlay;
 export 'src/ui/monitor_screen.dart' show MonitorScreen;
 export 'src/ui/monitor_entry_screen.dart' show MonitorEntryScreen;

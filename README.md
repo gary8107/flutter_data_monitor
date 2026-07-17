@@ -49,6 +49,41 @@ mqtt.error('MQTT 連接逾時');
 
 > `connect()` 內 `client.updates?.listen` 是**所有** inbound 訊息的唯一總線，`publish()` 是唯一 outbound 點——兩處各一行就把收送全包了。
 
+## 內建 channel：App 事件 / 狀態 / 路由
+
+同樣**不依賴任何狀態管理套件**。
+
+**路由**：把 observer 掛到 `MaterialApp`（或 GoRouter）即可自動記錄 push/pop：
+
+```dart
+MaterialApp(
+  navigatorObservers: [MonitorNavigatorObserver()],
+  ...
+);
+```
+
+**事件 / 狀態**：用 `AppEventMonitor` 具名 API：
+
+```dart
+final appEvent = AppEventMonitor();
+appEvent.event('使用者登入', detail: 'AuthService', data: {'userId': 'u_1024'});
+appEvent.stateChanged('counterProvider', from: 0, to: 1);
+```
+
+**Riverpod**：不需讓 package 依賴 riverpod，寫一個 5 行的 `ProviderObserver` 轉呼叫即可：
+
+```dart
+class MonitorProviderObserver extends ProviderObserver {
+  final _monitor = AppEventMonitor();
+  @override
+  void didUpdateProvider(provider, previousValue, newValue, container) {
+    _monitor.stateChanged(provider.name ?? provider.runtimeType.toString(),
+        from: previousValue, to: newValue);
+  }
+}
+// ProviderScope(observers: [MonitorProviderObserver()], child: ...)
+```
+
 ## 新增你自己的監控（三種由簡到繁）
 
 ### A. 一行純文字 log（最省事，免寫 channel）
