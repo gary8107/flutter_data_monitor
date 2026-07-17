@@ -9,4 +9,5 @@
 - 通用 `Monitor.instance.log(...)`（純文字與結構化事件）。
 - UI：可拖曳懸浮鈕、列表（搜尋 + 分類 chip 篩選）、詳情（多 tab / section）。
 - `MonitorGate`：掛在 `MaterialApp.builder` 的穩定式懸浮鈕，預設三指連點三下切換顯示 / 隱藏。
+- `MonitorEntry.source`：來源標記欄位（如裝置名稱），列表每列與詳情頁各顯示一個小標籤；`MqttMonitor.received/published` 與 `log()` 皆可帶入。
 - 可擴充點：`MonitorSection` 子類化客製顯示。

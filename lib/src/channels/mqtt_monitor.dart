@@ -36,23 +36,26 @@ class MqttMonitor {
 
   static const String category = 'MQTT';
 
-  /// 收到訂閱訊息（裝置上報）。
-  MonitorEntry received(String topic, String payload, {Object? qos}) {
+  /// 收到訂閱訊息（裝置上報）。[source] 可帶裝置名稱等來源標記。
+  MonitorEntry received(String topic, String payload,
+      {Object? qos, String? source}) {
     return _message(
       arrow: '←',
       label: '收到',
       topic: topic,
       payload: payload,
       qos: qos,
+      source: source,
     );
   }
 
-  /// 發布訊息（下發控制）。
+  /// 發布訊息（下發控制）。[source] 可帶裝置名稱等來源標記。
   MonitorEntry published(
     String topic,
     String payload, {
     Object? qos,
     bool? retain,
+    String? source,
   }) {
     return _message(
       arrow: '→',
@@ -61,6 +64,7 @@ class MqttMonitor {
       payload: payload,
       qos: qos,
       retain: retain,
+      source: source,
     );
   }
 
@@ -107,6 +111,7 @@ class MqttMonitor {
     required String payload,
     Object? qos,
     bool? retain,
+    String? source,
   }) {
     final meta = <String, Object?>{
       '方向': label,
@@ -119,6 +124,7 @@ class MqttMonitor {
       category: category,
       title: '$arrow  $topic',
       subtitle: _preview(payload),
+      source: source,
       tabs: [
         MonitorTab(name: label, sections: [
           KeyValueSection.fromMap('Meta', meta),

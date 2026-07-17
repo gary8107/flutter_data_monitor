@@ -28,6 +28,7 @@ class MonitorEntry {
     required this.category,
     required this.title,
     this.subtitle,
+    this.source,
     this.status = MonitorStatus.success,
     List<MonitorTab>? tabs,
     this.raw,
@@ -52,6 +53,9 @@ class MonitorEntry {
 
   /// 列表次標題（例如完整 uri、MQTT topic）。可為 null。
   String? subtitle;
+
+  /// 來源標記（例如裝置名稱、主機名）。每一條會獨立顯示一個小標籤。可為 null。
+  String? source;
 
   /// 狀態。
   MonitorStatus status;

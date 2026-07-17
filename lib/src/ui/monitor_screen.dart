@@ -151,12 +151,24 @@ class _MonitorScreenState extends State<MonitorScreen> {
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
-      subtitle: entry.subtitle == null
+      subtitle: (entry.source == null && entry.subtitle == null)
           ? null
-          : Text(
-              entry.subtitle!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+          : Row(
+              children: [
+                if (entry.source != null) ...[
+                  Flexible(child: sourceBadge(entry.source!)),
+                  const SizedBox(width: 6),
+                ],
+                if (entry.subtitle != null)
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      entry.subtitle!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+              ],
             ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,

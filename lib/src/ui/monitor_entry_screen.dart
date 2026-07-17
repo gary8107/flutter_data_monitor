@@ -95,6 +95,10 @@ class MonitorEntryScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
+          if (entry.source != null) ...[
+            const SizedBox(height: 8),
+            sourceBadge(entry.source!),
+          ],
         ],
       ),
     );

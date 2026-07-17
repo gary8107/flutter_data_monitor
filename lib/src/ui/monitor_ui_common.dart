@@ -39,6 +39,28 @@ Widget categoryBadge(String category) {
   );
 }
 
+/// 來源標籤（例如裝置名稱）。中性灰底 + 裝置 icon，與分類色 badge 區隔。
+Widget sourceBadge(String source) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+    decoration: BoxDecoration(
+      color: Colors.grey.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.memory, size: 12, color: Colors.grey.shade700),
+        const SizedBox(width: 3),
+        Text(
+          source,
+          style: TextStyle(fontSize: 11, color: Colors.grey.shade800),
+        ),
+      ],
+    ),
+  );
+}
+
 /// 依狀態回傳列表 leading icon。
 Widget statusIcon(MonitorStatus status) {
   switch (status) {
